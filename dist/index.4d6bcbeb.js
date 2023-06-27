@@ -727,16 +727,22 @@ parcelHelpers.defineInteropFlag(exports);
 var _core = require("../core/core");
 var _headline = require("../components/Headline");
 var _headlineDefault = parcelHelpers.interopDefault(_headline);
+var _search = require("../components/Search");
+var _searchDefault = parcelHelpers.interopDefault(_search);
+var _movielist = require("../components/Movielist");
+var _movielistDefault = parcelHelpers.interopDefault(_movielist);
 class Home extends (0, _core.Component) {
     render() {
         const headline = new (0, _headlineDefault.default)().el;
+        const search = new (0, _searchDefault.default)().el;
+        const movieList = new (0, _movielistDefault.default)().el;
         this.el.classList.add("container");
-        this.el.append(headline);
+        this.el.append(headline, search, movieList);
     }
 }
 exports.default = Home;
 
-},{"../core/core":"3SuZC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../components/Headline":"gaVgo"}],"gaVgo":[function(require,module,exports) {
+},{"../core/core":"3SuZC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../components/Headline":"gaVgo","../components/Search":"jqPPz","../components/Movielist":"1MaMM"}],"gaVgo":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _core = require("../core/core");
@@ -762,6 +768,84 @@ class Headline extends (0, _core.Component) {
 }
 exports.default = Headline;
 
-},{"../core/core":"3SuZC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["f3BSW","gLLPy"], "gLLPy", "parcelRequirec45b")
+},{"../core/core":"3SuZC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"jqPPz":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _core = require("../core/core");
+var _movie = require("../store/movie");
+var _movieDefault = parcelHelpers.interopDefault(_movie);
+class Search extends (0, _core.Component) {
+    render() {
+        this.el.classList.add("search");
+        this.el.innerHTML = /* html */ `
+      <input placeholder="영화 제목을 검색하세요!"/>
+      <button class="btn btn-primary">검색</button>
+    `;
+        const inputEl = this.el.querySelector("input");
+        inputEl.addEventListener("input", ()=>{
+            (0, _movieDefault.default).state.searchText = inputEl.value;
+        });
+        inputEl.addEventListener("keydown", (e)=>{
+            if (e.key === "Enter" && (0, _movieDefault.default).state.searchText.trim()) (0, _movie.searchMovies)(1);
+        });
+        const btnEl = this.el.querySelector(".btn");
+        btnEl.addEventListener("click", ()=>{
+            if ((0, _movieDefault.default).state.searchText.trim()) (0, _movie.searchMovies)(1);
+        });
+    }
+}
+exports.default = Search;
+
+},{"../core/core":"3SuZC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../store/movie":"kq1bo"}],"kq1bo":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "searchMovies", ()=>searchMovies);
+var _core = require("../core/core");
+const store = new (0, _core.Store)({
+    searchText: "",
+    page: 1,
+    movies: []
+});
+exports.default = store;
+const searchMovies = async (page)=>{
+    if (page === 1) {
+        store.state.page = 1;
+        store.state.movies = [];
+    }
+    const res = await fetch(`https://omdbapi.com/?apikey=7035c60c&s=${store.state.searchText}&page=${page}`);
+    const { Search } = await res.json();
+    store.state.movies = [
+        ...store.state.movies,
+        ...Search
+    ];
+};
+
+},{"../core/core":"3SuZC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"1MaMM":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _core = require("../core/core");
+var _movie = require("../store/movie");
+var _movieDefault = parcelHelpers.interopDefault(_movie);
+class MovieList extends (0, _core.Component) {
+    constructor(){
+        super();
+        (0, _movieDefault.default).subscribe("movies", ()=>{
+            this.render();
+        });
+    }
+    render() {
+        this.el.classList.add("movie-list");
+        this.el.innerHTML = /* html */ `
+      <div class="movies"></div>
+    `;
+        const moviesEl = this.el.querySelector(".movies");
+        moviesEl.append((0, _movieDefault.default).state.movies.map((movie)=>{
+            return movie.Title;
+        }));
+    }
+}
+exports.default = MovieList;
+
+},{"../core/core":"3SuZC","../store/movie":"kq1bo","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["f3BSW","gLLPy"], "gLLPy", "parcelRequirec45b")
 
 //# sourceMappingURL=index.4d6bcbeb.js.map
