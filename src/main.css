@@ -52,6 +52,25 @@ body {
   color: var(--color-white);
 }
 
+.headline {
+  margin-bottom: 40px;
+}
+
+.headline h1 {
+  font-family: "Oswald", sans-serif;
+  font-size: 80px;
+  line-height: 1;
+  margin-bottom: 40px;
+}
+
+.headline h1 span {
+  color: var(--color-primary);
+}
+
+.headline p {
+  color: var(--color-white-30);
+}
+
 .search {
   display: flex;
   gap: 10px;
@@ -78,21 +97,58 @@ body {
   max-width: 150px;
 }
 
-.headline {
-  margin-bottom: 40px;
+.movie-list {
+  padding: 20px;
+  border-radius: 4px;
+  background-color: var(--color-area);
 }
 
-.headline h1 {
-  font-family: "Oswald", sans-serif;
-  font-size: 80px;
-  line-height: 1;
-  margin-bottom: 40px;
+.movie-list .movies {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
 }
 
-.headline h1 span {
+.movies .movie {
+  width: 200px;
+  height: 300px;
+  border-radius: 4px;
+  background-color: var(--color-black);
+  background-size: cover;
+  overflow: hidden;
+  position: relative;
+  /* box-sizing: border-box; */
+}
+
+.movies .movie:hover::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  border: 6px solid var(--color-primary);
+  /* border: 6px solid var(--color-primary); */
+}
+
+.movies .movie .info {
+  width: 100%;
+  padding: 14px;
+  box-sizing: border-box;
+  font-size: 14px;
+  text-align: center;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background-color: rgba(14, 17, 27, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.movies .movie .info .year {
   color: var(--color-primary);
 }
 
-.headline p {
-  color: var(--color-white-30);
+.movies .movie .info .title {
+  color: var(--color-white);
 }

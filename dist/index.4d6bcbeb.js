@@ -808,16 +808,16 @@ const store = new (0, _core.Store)({
 });
 exports.default = store;
 const searchMovies = async (page)=>{
-    if (page === 1) {
-        store.state.page = 1;
-        store.state.movies = [];
-    }
+    store.state.page = page;
+    if (page === 1) store.state.movies = [];
     const res = await fetch(`https://omdbapi.com/?apikey=7035c60c&s=${store.state.searchText}&page=${page}`);
-    const { Search } = await res.json();
+    const { Search, totalResults } = await res.json();
+    console.log(totalResults);
     store.state.movies = [
         ...store.state.movies,
         ...Search
     ];
+    Number(totalResults);
 };
 
 },{"../core/core":"3SuZC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"1MaMM":[function(require,module,exports) {
@@ -826,6 +826,8 @@ parcelHelpers.defineInteropFlag(exports);
 var _core = require("../core/core");
 var _movie = require("../store/movie");
 var _movieDefault = parcelHelpers.interopDefault(_movie);
+var _movieItem = require("./MovieItem");
+var _movieItemDefault = parcelHelpers.interopDefault(_movieItem);
 class MovieList extends (0, _core.Component) {
     constructor(){
         super();
@@ -839,13 +841,41 @@ class MovieList extends (0, _core.Component) {
       <div class="movies"></div>
     `;
         const moviesEl = this.el.querySelector(".movies");
-        moviesEl.append((0, _movieDefault.default).state.movies.map((movie)=>{
-            return movie.Title;
+        moviesEl.append(...(0, _movieDefault.default).state.movies.map((movie)=>{
+            return new (0, _movieItemDefault.default)({
+                movie: movie
+            }).el;
         }));
     }
 }
 exports.default = MovieList;
 
-},{"../core/core":"3SuZC","../store/movie":"kq1bo","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["f3BSW","gLLPy"], "gLLPy", "parcelRequirec45b")
+},{"../core/core":"3SuZC","../store/movie":"kq1bo","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./MovieItem":"fAzE8"}],"fAzE8":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _core = require("../core/core");
+class MovieItem extends (0, _core.Component) {
+    constructor(props){
+        super({
+            props,
+            tagName: "a"
+        });
+    }
+    render() {
+        const { movie } = this.props;
+        this.el.setAttribute("href", `#/movie?id=${movie.imdbID}`);
+        this.el.classList.add("movie");
+        this.el.style.backgroundImage = `url(${movie.Poster})`;
+        this.el.innerHTML = /* html */ `
+      <div class="info">
+        <div class="year">${movie.Year}</div>
+        <div class="title">${movie.Title}</div>
+      </div>
+    `;
+    }
+}
+exports.default = MovieItem;
+
+},{"../core/core":"3SuZC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["f3BSW","gLLPy"], "gLLPy", "parcelRequirec45b")
 
 //# sourceMappingURL=index.4d6bcbeb.js.map
