@@ -6,12 +6,20 @@ export default class MovielistMore extends Component {
     super({
       tagName: "button",
     });
+    movieStore.subscribe("pageMax", () => {
+      const { page, pageMax } = movieStore.state;
+
+      pageMax > page
+        ? this.el.classList.remove("hide")
+        : this.el.classList.add("hide");
+    });
   }
   render() {
     this.el.classList.add("btn", "view-more", "hide");
     this.el.textContent = "더 보기";
 
     this.el.addEventListener("click", async () => {
+      this.el.classList.add("hide");
       await searchMovies(movieStore.state.page + 1);
     });
   }
