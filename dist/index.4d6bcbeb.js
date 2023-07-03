@@ -587,15 +587,18 @@ root.append(new (0, _appDefault.default)().el);
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _core = require("./core/core");
+var _theHeader = require("./components/TheHeader");
+var _theHeaderDefault = parcelHelpers.interopDefault(_theHeader);
 class App extends (0, _core.Component) {
     render() {
+        const theHeader = new (0, _theHeaderDefault.default)().el;
         const routerView = document.createElement("router-view");
-        this.el.append(routerView);
+        this.el.append(theHeader, routerView);
     }
 }
 exports.default = App;
 
-},{"./core/core":"3SuZC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3SuZC":[function(require,module,exports) {
+},{"./core/core":"3SuZC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./components/TheHeader":"3Cyq4"}],"3SuZC":[function(require,module,exports) {
 ///// Component /////
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -708,7 +711,55 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"3L9mC":[function(require,module,exports) {
+},{}],"3Cyq4":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _core = require("../core/core");
+class TheHeader extends (0, _core.Component) {
+    constructor(){
+        super({
+            tagName: "header",
+            state: {
+                menus: [
+                    {
+                        name: "Search",
+                        href: "#/"
+                    },
+                    {
+                        name: "Movie",
+                        href: "#/movie?id=tt4520988"
+                    },
+                    {
+                        name: "About",
+                        href: "#/about"
+                    }
+                ]
+            }
+        });
+    }
+    render() {
+        this.el.innerHTML = /* html */ `
+      <a href="#/" class="logo"><span>OMDbAPI</span>.COM</a>
+      <nav>
+        <ul>
+          ${this.state.menus.map((menu)=>{
+            return /* html */ `
+              <li>
+                <a href="${menu.href}">${menu.name}</a>
+              </li>
+            `;
+        }).join("")}
+        </ul>
+      </nav>
+      <a href="#/about" class="user">
+        <img src="https://heropy.blog/css/images/logo.png" alt="user">
+      </a>
+    `;
+    }
+}
+exports.default = TheHeader;
+
+},{"../core/core":"3SuZC","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3L9mC":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _core = require("../core/core");
@@ -787,7 +838,7 @@ class Search extends (0, _core.Component) {
     render() {
         this.el.classList.add("search");
         this.el.innerHTML = /* html */ `
-      <input placeholder="영화 제목을 검색하세요!"/>
+      <input value="${(0, _movieDefault.default).state.searchText}" placeholder="영화 제목을 검색하세요!"/>
       <button class="btn btn-primary">검색</button>
     `;
         const inputEl = this.el.querySelector("input");
@@ -957,13 +1008,23 @@ var _movie = require("../store/movie");
 var _movieDefault = parcelHelpers.interopDefault(_movie);
 class Movie extends (0, _core.Component) {
     async render() {
+        this.el.classList.add("container", "the-movie");
+        this.el.innerHTML = /* html */ `
+      <div class="poster skeleton"></div>
+      <div class="specs">
+        <div class="title skeleton"></div>
+        <div class="labels skeleton"></div>
+        <div class="plot skeleton"></div>
+      </div>
+      
+    `;
         await (0, _movie.getMovieDetails)(history.state.id);
         console.log((0, _movieDefault.default).state.movie);
         // console.log(history.state.id);
         const { movie } = (0, _movieDefault.default).state;
-        this.el.classList.add("container", "the-movie");
+        const bigPoster = movie.Poster.replace("SX300", "SX700");
         this.el.innerHTML = /* html */ `
-      <div style="background-image: url(${movie.Poster})" class="poster"></div>
+      <div style="background-image: url(${bigPoster})" class="poster"></div>
       <div class="specs">
         <div class="title">${movie.Title}</div>
         <div class="labels">
